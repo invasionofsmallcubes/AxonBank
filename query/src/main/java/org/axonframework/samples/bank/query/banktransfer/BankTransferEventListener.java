@@ -20,11 +20,15 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.samples.bank.api.banktransfer.BankTransferCompletedEvent;
 import org.axonframework.samples.bank.api.banktransfer.BankTransferCreatedEvent;
 import org.axonframework.samples.bank.api.banktransfer.BankTransferFailedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BankTransferEventListener {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private BankTransferRepository repository;
 
@@ -35,6 +39,7 @@ public class BankTransferEventListener {
 
     @EventHandler
     public void on(BankTransferCreatedEvent event) {
+        LOGGER.info("@EventHandler {}", event);
         repository.save(new BankTransferEntry(event.getBankTransferId(),
                                               event.getSourceBankAccountId(),
                                               event.getDestinationBankAccountId(),
@@ -43,6 +48,7 @@ public class BankTransferEventListener {
 
     @EventHandler
     public void on(BankTransferFailedEvent event) {
+        LOGGER.info("@EventHandler {}", event);
         BankTransferEntry bankTransferEntry = repository.findOneByAxonBankTransferId(event.getBankTransferId());
         bankTransferEntry.setStatus(BankTransferEntry.Status.FAILED);
 
@@ -51,6 +57,7 @@ public class BankTransferEventListener {
 
     @EventHandler
     public void on(BankTransferCompletedEvent event) {
+        LOGGER.info("@EventHandler {}", event);
         BankTransferEntry bankTransferEntry = repository.findOneByAxonBankTransferId(event.getBankTransferId());
         bankTransferEntry.setStatus(BankTransferEntry.Status.COMPLETED);
 

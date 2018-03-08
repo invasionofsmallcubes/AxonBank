@@ -21,11 +21,15 @@ import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.samples.bank.api.bankaccount.*;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
 @Aggregate
 public class BankAccount {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @AggregateIdentifier
     private String id;
@@ -36,19 +40,27 @@ public class BankAccount {
     private BankAccount() {
     }
 
+    private void log(String annotation, Object command) {
+        LOGGER.info("{} {}", annotation, command);
+    }
+
     @CommandHandler
     public BankAccount(CreateBankAccountCommand command) {
+        log("@CommandHandler", command);
         apply(new BankAccountCreatedEvent(command.getBankAccountId(), command.getOverdraftLimit()));
     }
 
     @CommandHandler
     public void deposit(DepositMoneyCommand command) {
+        log("@CommandHandler", command);
         apply(new MoneyDepositedEvent(id, command.getAmountOfMoney()));
     }
 
     @CommandHandler
     public void withdraw(WithdrawMoneyCommand command) {
+        log("@CommandHandler", command);
         if (command.getAmountOfMoney() <= balanceInCents + overdraftLimit) {
+            LOGGER.info("check ok for {}", command);
             apply(new MoneyWithdrawnEvent(id, command.getAmountOfMoney()));
         }
     }
@@ -68,11 +80,13 @@ public class BankAccount {
 
     @CommandHandler
     public void returnMoney(ReturnMoneyOfFailedBankTransferCommand command) {
+        log("@CommandHandler", command);
         apply(new MoneyOfFailedBankTransferReturnedEvent(id, command.getAmount()));
     }
 
     @EventSourcingHandler
     public void on(BankAccountCreatedEvent event) {
+        LOGGER.info("{} {}", "@EventSourcingHandler", event);
         this.id = event.getId();
         this.overdraftLimit = event.getOverdraftLimit();
         this.balanceInCents = 0;
@@ -80,11 +94,13 @@ public class BankAccount {
 
     @EventSourcingHandler
     public void on(MoneyAddedEvent event) {
+        LOGGER.info("{} {}", "@EventSourcingHandler", event);
         balanceInCents += event.getAmount();
     }
 
     @EventSourcingHandler
     public void on(MoneySubtractedEvent event) {
+        LOGGER.info("{} {}", "@EventSourcingHandler", event);
         balanceInCents -= event.getAmount();
     }
 }

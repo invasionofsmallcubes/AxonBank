@@ -20,12 +20,12 @@ public class BankTransferManagementSagaTest {
     private FixtureConfiguration testFixture;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         testFixture = new SagaTestFixture<>(BankTransferManagementSaga.class);
     }
 
     @Test
-    public void testBankTransferCreated() throws Exception {
+    public void testBankTransferCreated() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -43,7 +43,7 @@ public class BankTransferManagementSagaTest {
     }
 
     @Test
-    public void testSourceBankAccountNotFound() throws Exception {
+    public void testSourceBankAccountNotFound() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -59,7 +59,7 @@ public class BankTransferManagementSagaTest {
     }
 
     @Test
-    public void testSourceBankAccountDebitRejected() throws Exception {
+    public void testSourceBankAccountDebitRejected() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -76,7 +76,7 @@ public class BankTransferManagementSagaTest {
     }
 
     @Test
-    public void testSourceBankAccountDebited() throws Exception {
+    public void testSourceBankAccountDebited() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -96,7 +96,7 @@ public class BankTransferManagementSagaTest {
     }
 
     @Test
-    public void testDestinationBankAccountNotFound() throws Exception {
+    public void testDestinationBankAccountNotFound() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -116,7 +116,7 @@ public class BankTransferManagementSagaTest {
     }
 
     @Test
-    public void testDestinationBankAccountCredited() throws Exception {
+    public void testDestinationBankAccountCredited() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";

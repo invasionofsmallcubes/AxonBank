@@ -26,3 +26,12 @@ The distributed version can be run using the following commands:
 * `docker-compose up`
 
 Once all containers are running you can access each instance of Axon Bank by visiting [http://localhost:8080/](http://localhost:8080/) and [http://localhost:8081/](http://localhost:8081/).
+
+## TODO
+- ~add logger for every axon-annotation~
+    - ~try to get the thread~
+- difference @EventSourcingHandler vs @Handler
+- ~why all the events are applied?~ you have to do a snapshot
+- ~where is created the uuid?~ -> on the controller (basically client-side)
+- implement the snowflake algo
+- installare lombok plugin

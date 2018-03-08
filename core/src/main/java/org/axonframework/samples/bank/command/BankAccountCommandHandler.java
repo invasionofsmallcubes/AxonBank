@@ -22,10 +22,14 @@ import org.axonframework.commandhandling.model.AggregateNotFoundException;
 import org.axonframework.commandhandling.model.Repository;
 import org.axonframework.eventhandling.EventBus;
 import org.axonframework.samples.bank.api.bankaccount.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.axonframework.eventhandling.GenericEventMessage.asEventMessage;
 
 public class BankAccountCommandHandler {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private Repository<BankAccount> repository;
     private EventBus eventBus;
@@ -37,6 +41,9 @@ public class BankAccountCommandHandler {
 
     @CommandHandler
     public void handle(DebitSourceBankAccountCommand command) {
+
+        LOGGER.info("{} {}", "@CommandHandler",  command);
+
         try {
             Aggregate<BankAccount> bankAccountAggregate = repository.load(command.getBankAccountId());
             bankAccountAggregate.execute(bankAccount -> bankAccount
@@ -48,6 +55,9 @@ public class BankAccountCommandHandler {
 
     @CommandHandler
     public void handle(CreditDestinationBankAccountCommand command) {
+
+        LOGGER.info("{} {}", "@CommandHandler",  command);
+
         try {
             Aggregate<BankAccount> bankAccountAggregate = repository.load(command.getBankAccountId());
             bankAccountAggregate.execute(bankAccount -> bankAccount

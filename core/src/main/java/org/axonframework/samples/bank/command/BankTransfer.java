@@ -26,11 +26,15 @@ import org.axonframework.samples.bank.api.banktransfer.CreateBankTransferCommand
 import org.axonframework.samples.bank.api.banktransfer.MarkBankTransferCompletedCommand;
 import org.axonframework.samples.bank.api.banktransfer.MarkBankTransferFailedCommand;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
 @Aggregate
 public class BankTransfer {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @AggregateIdentifier
     private String BankTransferId;
@@ -45,6 +49,9 @@ public class BankTransfer {
 
     @CommandHandler
     public BankTransfer(CreateBankTransferCommand command) {
+
+        LOGGER.info("{} {}", "@CommandHandler",  command);
+
         apply(new BankTransferCreatedEvent(command.getBankTransferId(),
                                            command.getSourceBankAccountId(),
                                            command.getDestinationBankAccountId(),
@@ -53,16 +60,20 @@ public class BankTransfer {
 
     @CommandHandler
     public void handle(MarkBankTransferCompletedCommand command) {
+        LOGGER.info("{} {}", "@CommandHandler",  command);
+
         apply(new BankTransferCompletedEvent(command.getBankTransferId()));
     }
 
     @CommandHandler
     public void handle(MarkBankTransferFailedCommand command) {
+        LOGGER.info("{} {}", "@CommandHandler",  command);
         apply(new BankTransferFailedEvent(command.getBankTransferId()));
     }
 
     @EventHandler
-    public void on(BankTransferCreatedEvent event) throws Exception {
+    public void on(BankTransferCreatedEvent event) {
+        LOGGER.info("{} {}", "@EventHandler" , event);
         this.BankTransferId = event.getBankTransferId();
         this.sourceBankAccountId = event.getSourceBankAccountId();
         this.destinationBankAccountId = event.getDestinationBankAccountId();
@@ -72,11 +83,13 @@ public class BankTransfer {
 
     @EventHandler
     public void on(BankTransferCompletedEvent event) {
+        LOGGER.info("{} {}", "@EventHandler" , event);
         this.status = Status.COMPLETED;
     }
 
     @EventHandler
     public void on(BankTransferFailedEvent event) {
+        LOGGER.info("{} {}", "@EventHandler" , event);
         this.status = Status.FAILED;
     }
 

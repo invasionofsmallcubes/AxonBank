@@ -25,6 +25,8 @@ import org.axonframework.samples.bank.query.bankaccount.BankAccountRepository;
 import org.axonframework.samples.bank.web.dto.BankAccountDto;
 import org.axonframework.samples.bank.web.dto.DepositDto;
 import org.axonframework.samples.bank.web.dto.WithdrawalDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
@@ -36,6 +38,8 @@ import java.util.UUID;
 @MessageMapping("/bank-accounts")
 public class BankAccountController {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     private final CommandGateway commandGateway;
     private final BankAccountRepository bankAccountRepository;
 
@@ -46,11 +50,18 @@ public class BankAccountController {
 
     @SubscribeMapping
     public Iterable<BankAccountEntry> all() {
+
+        LOGGER.info("GETALL");
+
         return bankAccountRepository.findAllByOrderByIdAsc();
     }
 
     @SubscribeMapping("/{id}")
     public BankAccountEntry get(@DestinationVariable String id) {
+
+        LOGGER.info("GET");
+
+
         return bankAccountRepository.findOne(id);
     }
 
@@ -58,18 +69,28 @@ public class BankAccountController {
     public void create(BankAccountDto bankAccountDto) {
         String id = UUID.randomUUID().toString();
         CreateBankAccountCommand command = new CreateBankAccountCommand(id, bankAccountDto.getOverdraftLimit());
+
+        LOGGER.info("CREATE");
+
         commandGateway.send(command);
     }
 
     @MessageMapping("/withdraw")
     public void withdraw(WithdrawalDto depositDto) {
         WithdrawMoneyCommand command = new WithdrawMoneyCommand(depositDto.getBankAccountId(), depositDto.getAmount());
+
+        LOGGER.info("WITHDRAW");
+
+
         commandGateway.send(command);
     }
 
     @MessageMapping("/deposit")
     public void deposit(DepositDto depositDto) {
         DepositMoneyCommand command = new DepositMoneyCommand(depositDto.getBankAccountId(), depositDto.getAmount());
+
+        LOGGER.info("DEPOSIT");
+
         commandGateway.send(command);
     }
 

@@ -31,12 +31,12 @@ public class BankTransferTest {
     private FixtureConfiguration<BankTransfer> fixture;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         fixture = new AggregateTestFixture<>(BankTransfer.class);
     }
 
     @Test
-    public void testCreateBankTransfer() throws Exception {
+    public void testCreateBankTransfer() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -50,7 +50,7 @@ public class BankTransferTest {
     }
 
     @Test
-    public void testMarkBankTransferCompleted() throws Exception {
+    public void testMarkBankTransferCompleted() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";
@@ -61,7 +61,7 @@ public class BankTransferTest {
     }
 
     @Test
-    public void testMarkBankTransferFailed() throws Exception {
+    public void testMarkBankTransferFailed() {
         String bankTransferId = "bankTransferId";
         String sourceBankAccountId = "sourceBankAccountId";
         String destinationBankAccountId = "destinationBankAccountId";

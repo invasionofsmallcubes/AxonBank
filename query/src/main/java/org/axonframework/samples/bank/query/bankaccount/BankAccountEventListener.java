@@ -20,12 +20,16 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.samples.bank.api.bankaccount.BankAccountCreatedEvent;
 import org.axonframework.samples.bank.api.bankaccount.MoneyAddedEvent;
 import org.axonframework.samples.bank.api.bankaccount.MoneySubtractedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BankAccountEventListener {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private BankAccountRepository repository;
     private SimpMessageSendingOperations messagingTemplate;
@@ -38,6 +42,8 @@ public class BankAccountEventListener {
 
     @EventHandler
     public void on(BankAccountCreatedEvent event) {
+        LOGGER.info("@EventHandler {}", event);
+
         repository.save(new BankAccountEntry(event.getId(), 0, event.getOverdraftLimit()));
 
         broadcastUpdates();
@@ -45,6 +51,7 @@ public class BankAccountEventListener {
 
     @EventHandler
     public void on(MoneyAddedEvent event) {
+        LOGGER.info("@EventHandler {}", event);
         BankAccountEntry bankAccountEntry = repository.findOneByAxonBankAccountId(event.getBankAccountId());
         bankAccountEntry.setBalance(bankAccountEntry.getBalance() + event.getAmount());
 
@@ -55,6 +62,7 @@ public class BankAccountEventListener {
 
     @EventHandler
     public void on(MoneySubtractedEvent event) {
+        LOGGER.info("@EventHandler {}", event);
         BankAccountEntry bankAccountEntry = repository.findOneByAxonBankAccountId(event.getBankAccountId());
         bankAccountEntry.setBalance(bankAccountEntry.getBalance() - event.getAmount());
 
